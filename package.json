@@ -1,14 +1,16 @@
 {
-  "name": "angular-seed",
+  "name": "luchuan",
   "private": true,
-  "version": "0.0.0",
-  "description": "A starter project for AngularJS",
-  "repository": "https://github.com/angular/angular-seed",
+  "version": "0.0.1",
+  "description": "gether together and go luing chuan",
+  "repository": "https://github.com/Lomyal/luchuan",
   "license": "MIT",
   "devDependencies": {
     "karma": "~0.10",
     "protractor": "^1.1.1",
     "http-server": "^0.6.1",
+    "express": "^4.10.2",
+    "socket.io": "^1.3.5",
     "bower": "^1.3.1",
     "shelljs": "^0.2.6",
     "karma-junit-reporter": "^0.2.2"
@@ -16,8 +18,7 @@
   "scripts": {
     "postinstall": "bower install",
 
-    "prestart": "npm install",
-    "start": "http-server -a localhost -p 8000 -c-1",
+    "start": "supervisor server.js",
 
     "pretest": "npm install",
     "test": "karma start karma.conf.js",

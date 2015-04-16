@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row">
+    <h1 class="text-center">鹿船</h1>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="well chat-display">
+        <ul>
+          <li ng-repeat="msg in msgs">
+            {{ msg }}
+          </li>
+        </ul>
+        <a id="well-bottom"></a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <form action="">
+      <div class="col-xs-12 col-sm-10">
+        <input type="text" class="form-control" ng-model="content">
+      </div>
+      <div class="col-xs-12 col-sm-2">
+        <button type="submit" class="btn btn-primary btn-block" ng-click="sendSelfMessage()">发言</button>
+      </div>
+    </form>
+  </div>
+  <hr/>
+</div>
+
+
+
