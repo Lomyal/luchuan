@@ -1,41 +1,170 @@
-/* app css stylesheet */
 
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
+/*按钮*/
+.btn-luchuan {
+  color: #fff;
+  background-color: #f3961c;
+  border-color: #e98a0c;
+}
+.btn-luchuan:hover,
+.btn-luchuan:focus,
+.btn-luchuan.focus,
+.btn-luchuan:active,
+.btn-luchuan.active,
+.open > .dropdown-toggle.btn-luchuan {
+  color: #fff;
+  background-color: #d17b0b;
+  border-color: #b96d0a;
+}
+.btn-luchuan:active,
+.btn-luchuan.active,
+.open > .dropdown-toggle.btn-luchuan {
+  background-image: none;
+}
+.btn-luchuan.disabled,
+.btn-luchuan[disabled],
+fieldset[disabled] .btn-luchuan,
+.btn-luchuan.disabled:hover,
+.btn-luchuan[disabled]:hover,
+fieldset[disabled] .btn-luchuan:hover,
+.btn-luchuan.disabled:focus,
+.btn-luchuan[disabled]:focus,
+fieldset[disabled] .btn-luchuan:focus,
+.btn-luchuan.disabled.focus,
+.btn-luchuan[disabled].focus,
+fieldset[disabled] .btn-luchuan.focus,
+.btn-luchuan.disabled:active,
+.btn-luchuan[disabled]:active,
+fieldset[disabled] .btn-luchuan:active,
+.btn-luchuan.disabled.active,
+.btn-luchuan[disabled].active,
+fieldset[disabled] .btn-luchuan.active {
+  background-color: #f3961c;
+  border-color: #e98a0c;
+}
+.btn-luchuan .badge {
+  color: #f3961c;
+  background-color: #fff;
 }
 
-.menu:before {
-  content: "[";
-}
-
-.menu:after {
-  content: "]";
-}
-
-.menu > li {
-  display: inline;
-}
-
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
-}
-
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
-}
-
+/*聊天框*/
 .chat-display {
-  height: 10em;
+  height: 30em;
   overflow: scroll;
+  position: relative;
 }
 
+/*图标*/
 .img-luchuan-sm {
   height: 1em;
   width: 1em;
   margin-bottom: 0.15em;
 }
+
+/*消息容器*/
+.bubble-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  bottom: 0;
+}
+.bubble-list > li:before,
+.bubble-list > li:after {
+  display: table;
+  content: " ";
+}
+.bubble-list > li:after {
+  clear: both;
+}
+
+/*单条消息容器*/
+.ab-wrapper {
+  position: relative;
+}
+.ab-wrapper-left {
+  float: left;
+}
+.ab-wrapper-right {
+  float: right;
+}
+
+/*气泡*/
+.bubble,
+.avatar {
+  position: relative;
+  padding: 10px;
+  margin: 15px 0;
+  max-width: 200px;
+  line-height: 1.2;
+  text-align: left;
+  color: #fff;
+  background: #f3961c;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  word-wrap: break-word;
+  word-break: normal;
+}
+.bubble:after {
+  content: "\00a0";
+  width: 0;
+  height: 0;
+  display: block;
+  border-style: solid;
+  border-width: 8px;
+  position: absolute;
+  z-index: 1000;
+  top: 0.7em;
+}
+.ab-wrapper-left > .bubble {
+  left: 0;
+  margin-left: 50px;
+}
+.ab-wrapper-left > .bubble:after {
+  border-color: transparent #f3961c transparent transparent;
+  left: -16px;
+}
+.ab-wrapper-right > .bubble {
+  right: 0;
+  margin-right: 50px;
+}
+.ab-wrapper-right > .bubble:after {
+  border-color: transparent transparent transparent #f3961c;
+  right: -16px;
+}
+
+/*头像*/
+.avatar {
+  height: 36px;
+  width: 36px;
+  margin: 15px 0;
+  padding: 4px 6px 7px;
+  font-size: 23px;
+  text-align: center;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  position: absolute;
+}
+.ab-wrapper-left > .avatar {
+  left: 0;
+}
+.ab-wrapper-right > .avatar {
+  right: 0;
+}
+
+/*头像旁的名字*/
+.avatar-name {
+  font-size: 10px;
+  color: grey;
+  position: absolute;
+}
+.ab-wrapper-left > .avatar-name {
+  left: 0;
+  margin-right: -100px;
+}
+.ab-wrapper-right > .avatar-name {
+  right: 0;
+  margin-left: -100px;
+}
+

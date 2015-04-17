@@ -17,30 +17,41 @@ angular.module('myApp.chatroom', ['ngRoute'])
       socket.on('chat message', function(msg) {
         $scope.msgs.push(msg);
         $scope.$apply();
-        scrollToWellBottom();
+        //scrollToWellBottom();
       });
 
       // 发送信息
       $scope.sendSelfMessage = function() {
+        var content = $scope.content;
+
         var msg = {
           name: $routeParams.name,
-          content: $scope.content
+          content: content
         };
         var selfMsg = {
-          name: $routeParams.name + ' (我)',
-          content: $scope.content
+          name: $routeParams.name,
+          content: content,
+          self: true
         };
         socket.emit('chat message', msg);
         $scope.msgs.push(selfMsg);  // 更新自己的 model
-        scrollToWellBottom();
+        //scrollToWellBottom();
         $scope.content = '';
       };
+
+      // 滚动到最后一条消息
+      $scope.$watch("msgs", function () {
+        $scope.$evalAsync(function () {
+          scrollToWellBottom();
+        });
+      }, true);
 
       $scope.crc = getCanvasFingerprint();
 
       // 滚动到信息最底端
       function scrollToWellBottom() {
-        document.getElementById('well-bottom').scrollIntoView();
+        var elem = document.getElementsByClassName('chat-display')[0];
+        elem.scrollTop = elem.scrollHeight;
       }
 
       // 获取浏览器 canvas 指纹

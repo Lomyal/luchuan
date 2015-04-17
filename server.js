@@ -10,8 +10,6 @@ app.use(favicon('app/img/favicon.ico'));
 // 静态资源加载目录
 app.use(express.static('app'));
 
-
-
 //app.get('/', function(req, res){
 //  res.sendFile(__dirname + '/app/index.html');
 //});
