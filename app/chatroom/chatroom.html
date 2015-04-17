@@ -1,20 +1,22 @@
 <div class="container">
   <div class="row">
-    <h1 class="text-center">鹿船</h1>
+    <h1 class="text-center"><img src="/img/luchuan_sm.png" alt="luchuan" class="img-luchuan-sm"/> 鹿船</h1>
   </div>
   <hr/>
+
   <div class="row">
     <div class="col-xs-12">
       <div class="well chat-display">
         <ul>
-          <li ng-repeat="msg in msgs">
-            {{ msg }}
+          <li ng-repeat="msg in msgs track by $index">
+            {{ msg.name }} : {{ msg.content }}
           </li>
         </ul>
         <a id="well-bottom"></a>
       </div>
     </div>
   </div>
+
   <div class="row">
     <form action="">
       <div class="col-xs-12 col-sm-10">
@@ -25,6 +27,9 @@
       </div>
     </form>
   </div>
+
+  <hr/>
+  Brower ID: {{crc}}
   <hr/>
 </div>
 

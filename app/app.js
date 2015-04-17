@@ -3,11 +3,9 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
   'ngRoute',
-  'myApp.chatroom',
-  'myApp.view1',
-  'myApp.view2',
-  'myApp.version'
+  'myApp.welcome',
+  'myApp.chatroom'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/chatroom'});
+  $routeProvider.otherwise({redirectTo: '/welcome'});
 }]);
