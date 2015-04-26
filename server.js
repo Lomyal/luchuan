@@ -5,6 +5,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var favicon = require('express-favicon');
 
+var db = require('./server/db');
+
+// 设置网站小图标
 app.use(favicon('app/img/favicon.ico'));
 
 // 静态资源加载目录
@@ -14,19 +17,31 @@ app.use(express.static('app'));
 //  res.sendFile(__dirname + '/app/index.html');
 //});
 
-
+// socket 处理
 io.on('connection', function(socket) {
-  llog('a user connected');
+  llog('A user connected');
 
-  socket.on('chat message', function(msg) {
+  // 处理登录信息
+  socket.on('log in', function(info) {
+    llog('BID: ' + info.bid);
+    llog('USR: ' + info.username);
 
-    // 向发起此消息的用户之外的用户广播此消息
-    socket.broadcast.emit('chat message', msg);
-    llog('MSG: ' + msg.name + ' - ' + msg.content);
-  });
+    // insert
+    db.bindUser(info.bid, info.username, function() {
 
-  socket.on('disconnect', function() {
-    llog('user disconnected');
+      // 处理消息
+      socket.on('chat message', function(msg) {
+
+        // 向发起此消息的用户之外的用户广播此消息
+        socket.broadcast.emit('chat message', msg);
+        llog('MSG: ' + msg.name + ' - ' + msg.content);
+      });
+
+      // 处理离线
+      socket.on('disconnect', function() {
+        llog('A user disconnected');
+      });
+    });
   });
 });
 
@@ -34,6 +49,9 @@ io.on('connection', function(socket) {
 http.listen(settings.port, function() {
   lllog('Listening on ' + settings.host + ':' + settings.port);
 });
+
+
+
 
 // 日志输出函数
 function llog(msg) {

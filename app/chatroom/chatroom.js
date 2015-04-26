@@ -3,15 +3,21 @@
 angular.module('myApp.chatroom', ['ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
-      $routeProvider.when('/chatroom/:name/:boat', {
+      $routeProvider.when('/chatroom/:name', {
         templateUrl: 'chatroom/chatroom.html',
         controller: 'ChatroomCtrl'
       });
     }])
 
     .controller('ChatroomCtrl', ['$scope', '$routeParams', function($scope, $routeParams) {
-      var socket = io();
       $scope.msgs = [];
+      var bid = getCanvasFingerprint();
+
+      var socket = io();
+      socket.emit('log in', {
+        bid: bid,
+        username: $routeParams.name
+      });
 
       // 接收信息
       socket.on('chat message', function(msg) {
@@ -24,19 +30,21 @@ angular.module('myApp.chatroom', ['ngRoute'])
       $scope.sendSelfMessage = function() {
         var content = $scope.content;
 
-        var msg = {
-          name: $routeParams.name,
-          content: content
-        };
-        var selfMsg = {
-          name: $routeParams.name,
-          content: content,
-          self: true
-        };
-        socket.emit('chat message', msg);
-        $scope.msgs.push(selfMsg);  // 更新自己的 model
-        //scrollToWellBottom();
-        $scope.content = '';
+        if (content) {  // 不处理空白内容
+          var msg = {
+            name: $routeParams.name,
+            content: content
+          };
+          var selfMsg = {
+            name: $routeParams.name,
+            content: content,
+            self: true
+          };
+          socket.emit('chat message', msg);
+          $scope.msgs.push(selfMsg);  // 更新自己的 model
+          //scrollToWellBottom();
+          $scope.content = '';
+        }
       };
 
       // 滚动到最后一条消息
@@ -46,7 +54,7 @@ angular.module('myApp.chatroom', ['ngRoute'])
         });
       }, true);
 
-      $scope.crc = getCanvasFingerprint();
+      //$scope.bid = getCanvasFingerprint();
 
       // 滚动到信息最底端
       function scrollToWellBottom() {

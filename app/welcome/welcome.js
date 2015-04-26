@@ -43,12 +43,12 @@ angular.module('myApp.welcome', ['ngRoute'])
       ];
       $scope.selectedname = '王重阳 Double Sun King';
 
-      $scope.boats = ['聚点儿撸串儿'];
-      $scope.selectedboat = '聚点儿撸串儿';
+      //$scope.boats = ['聚点儿撸串儿'];
+      //$scope.selectedboat = '聚点儿撸串儿';
 
 
       $scope.enterChatRoom = function() {
-        $location.path('/chatroom/' + $scope.selectedname + '/' + $scope.selectedboat);
+        $location.path('/chatroom/' + $scope.selectedname);
       }
 
     }]);

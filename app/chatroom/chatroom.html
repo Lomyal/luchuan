@@ -10,8 +10,8 @@
 
         <ul class="bubble-list">
           <li ng-repeat="msg in msgs track by $index">
-            <div class="ab-wrapper  {{ msg.self === true ? 'ab-wrapper-right' : 'ab-wrapper-left' }}"">
-              <div class="avatar">{{ msg.name.slice(1, 2) }}</div>
+            <div class="ab-wrapper {{ msg.self === true ? 'ab-wrapper-right' : 'ab-wrapper-left' }}"">
+              <div class="avatar">{{ msg.name.slice(0, 1) }}</div>
               <div class="avatar-name">{{ msg.name }}</div>
               <div class="bubble">{{ msg.content }}</div>
             </div>
@@ -34,8 +34,8 @@
   </div>
 
   <hr/>
-  Brower ID: {{crc}}
-  <hr/>
+  <!--Brower ID: {{bid}}-->
+  <!--<hr/>-->
 </div>
 
 
