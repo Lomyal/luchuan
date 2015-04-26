@@ -1,9 +1,11 @@
 var settings = require('./settings');
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var favicon = require('express-favicon');
+var assert = require('assert');
 
 var db = require('./server/db');
 
@@ -13,9 +15,31 @@ app.use(favicon('app/img/favicon.ico'));
 // 静态资源加载目录
 app.use(express.static('app'));
 
-//app.get('/', function(req, res){
-//  res.sendFile(__dirname + '/app/index.html');
-//});
+// request body parser FOR JSON
+app.use(bodyParser.json());
+
+// 处理 bid 验证请求
+app.post('/bid', function(req, res) {
+  var bid = req.body.bid;
+
+  db.findBrowser(bid, function(err, username) {
+    assert.equal(null, err);
+    console.log('bid', bid);
+    console.log('username', username);
+
+    res.send({username: username});
+  });
+
+});
+
+// 处理注册请求
+app.post('/reg', function(req, res) {
+  db.bindUser(req.body.bid, req.body.username, function(err) {
+    assert.equal(null, err);
+
+    res.send('registered successfully');
+  });
+});
 
 // socket 处理
 io.on('connection', function(socket) {
@@ -26,8 +50,9 @@ io.on('connection', function(socket) {
     llog('BID: ' + info.bid);
     llog('USR: ' + info.username);
 
-    // insert
-    db.bindUser(info.bid, info.username, function() {
+    //// 对于第一次登录的设备，绑定该设备与用户名
+    //db.bindUser(info.bid, info.username, function(err) {
+    //  assert.equal(null, err);
 
       // 处理消息
       socket.on('chat message', function(msg) {
@@ -41,7 +66,8 @@ io.on('connection', function(socket) {
       socket.on('disconnect', function() {
         llog('A user disconnected');
       });
-    });
+
+    //});
   });
 });
 

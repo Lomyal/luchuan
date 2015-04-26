@@ -1,10 +1,12 @@
 <div class="container">
   <div class="row">
-    <h1 class="text-center">欢迎来到 <img src="/img/luchuan_sm.png" alt="luchuan" class="img-luchuan-sm"/> 鹿船</h1>
+    <h1 class="text-center" ng-show="!registered">欢迎来到 <img src="/img/luchuan_sm.png" alt="luchuan" class="img-luchuan-sm"/> 鹿船</h1>
+    <h1 class="text-center" ng-show="registered">欢迎回到 <img src="/img/luchuan_sm.png" alt="luchuan" class="img-luchuan-sm"/> 鹿船</h1>
   </div>
+
   <hr/>
 
-  <div class="row text-center">
+  <div class="row text-center" ng-show="!registered">
     <div class="col-xs-12">
       <p>选择你的昵称</p>
       <p>（慎重！会与你的设备绑定，不能修改）</p>
@@ -13,23 +15,27 @@
       <select ng-model="selectedname" ng-options="name for name in names"></select>
     </div>
   </div>
-  <hr/>
-
-  <!--<div class="row text-center">-->
-    <!--<div class="col-xs-12">-->
-      <!--<p>选择你要踩的船</p>-->
-    <!--</div>-->
-    <!--<div class="col-xs-12">-->
-      <!--<select ng-model="selectedboat" ng-options="boat for boat in boats"></select>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<hr/>-->
-
-  <div class="row text-center">
+  <div class="row text-center" ng-show="registered">
     <div class="col-xs-12">
-      <button class="btn btn-luchuan" ng-click="enterChatRoom()">我选好了</button>
+      <p>亲爱的</p>
+      <p>{{registered}}</p>
+      <p>欢迎回家！</p>
     </div>
   </div>
+
+  <br/>
+
+  <div class="row text-center" ng-show="!registered">
+    <div class="col-xs-12">
+      <button class="btn btn-luchuan" ng-click="enterChatRoom()">首次登船</button>
+    </div>
+  </div>
+  <div class="row text-center" ng-show="registered">
+    <div class="col-xs-12">
+      <button class="btn btn-luchuan" ng-click="enterChatRoomAgain()">再次登船</button>
+    </div>
+  </div>
+
   <hr/>
 
 </div>

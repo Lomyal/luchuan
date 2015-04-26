@@ -24,6 +24,18 @@ MongoClient.connect(url, function(err, db) {
 });
 
 /**
+ * 判断某设备是否注册过。若注册过，则返回用户名
+ * @param bid
+ * @param callback
+ */
+methods.findBrowser = function(bid, callback) {
+  coll_user.findOne({bid: bid}, function(err, doc) {
+    var username = doc && doc.username;
+    callback(err, username);
+  });
+};
+
+/**
  * 某设备（由BID标识）第一次登录时，绑定该设备和用户名
  * @param bid
  * @param username

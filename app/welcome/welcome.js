@@ -9,7 +9,21 @@ angular.module('myApp.welcome', ['ngRoute'])
       });
     }])
 
-    .controller('WelcomeCtrl', ['$scope', '$location', function($scope, $location) {
+    .controller('WelcomeCtrl', ['$scope', '$location', '$http', 'bidGen', function($scope, $location, $http, bidGen) {
+
+      // 判断该设备是否已经注册过
+      var bid = bidGen.getCanvasFingerprint();
+      $http({
+        method: 'POST',
+        url: '/bid',
+        data: {
+          bid: bid
+        }
+      })
+      .success(function(data, status, headers, config) {
+        $scope.registered = data.username;
+      });
+
       $scope.names = [
         '李莫愁 Don’t Worry Lee',
         '李寻欢 Be Happy Lee',
@@ -48,7 +62,23 @@ angular.module('myApp.welcome', ['ngRoute'])
 
 
       $scope.enterChatRoom = function() {
+
+        // 注册该设备
+        $http({
+          method: 'POST',
+          url: '/reg',
+          data: {
+            bid: bid,
+            username: $scope.selectedname
+          }
+        });
+
+        // 跳转
         $location.path('/chatroom/' + $scope.selectedname);
-      }
+      };
+
+      $scope.enterChatRoomAgain = function() {
+        $location.path('/chatroom/' + $scope.registered);
+      };
 
     }]);
