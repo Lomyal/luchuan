@@ -11,6 +11,17 @@ myApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/welcome'});
 }]);
 
+///**
+// * 页面间共享数据的服务
+// */
+//myApp.factory('shareFactory', function() {
+//  var sharedVariables = {};
+//  return {
+//    getVal : function() {return sharedVariables;},
+//    setVal : function(json) {sharedVariables = json;}
+//  }
+//});
+
 /**
  * 获取 browser id 的服务
  */

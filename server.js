@@ -22,12 +22,13 @@ app.use(bodyParser.json());
 app.post('/bid', function(req, res) {
   var bid = req.body.bid;
 
-  db.findBrowser(bid, function(err, username) {
-    assert.equal(null, err);
-    console.log('bid', bid);
-    console.log('username', username);
+  db.findBrowser(bid, function(err, username, lastVisitDate) {
+    llog('USER ' + username +' found in database.');
 
-    res.send({username: username});
+    res.send({
+      username: username,
+      lastVisitDate: lastVisitDate
+    });
   });
 
 });
@@ -43,31 +44,67 @@ app.post('/reg', function(req, res) {
 
 // socket 处理
 io.on('connection', function(socket) {
-  llog('A user connected');
 
-  // 处理登录信息
+  // 连接成功后，请求客户端发来用户信息
+  socket.emit('connection success');
+
+  var bid = '';
+  var username = '';
+
+  // 处理登录
   socket.on('log in', function(info) {
-    llog('BID: ' + info.bid);
-    llog('USR: ' + info.username);
+    bid = info.bid;
 
-    //// 对于第一次登录的设备，绑定该设备与用户名
-    //db.bindUser(info.bid, info.username, function(err) {
-    //  assert.equal(null, err);
+    // 获取用户名
+    db.findBrowser(bid, function(err, un, lastVisitDate) {
 
-      // 处理消息
-      socket.on('chat message', function(msg) {
+      // TODO: 设备尚未绑定时（un 未定义）的处理
 
-        // 向发起此消息的用户之外的用户广播此消息
-        socket.broadcast.emit('chat message', msg);
-        llog('MSG: ' + msg.name + ' - ' + msg.content);
+      username = un;
+      llog('USER: [' + username + '] logged in.');
+
+      // 获取历史消息
+      db.getHistoryMessages('luchuan', lastVisitDate, function(err, docs) { // 目前只有‘luchuan’这一个聊天室
+        var msgs = [];
+        docs.forEach(function(doc) {
+          msgs.push({
+            username: doc.username,
+            content: doc.message
+          });
+        });
+
+        // 回送用户名，以及发送用户未接收过的历史消息
+        socket.emit('login commit', {
+          username: username,
+          msgs: msgs
+        });
       });
 
-      // 处理离线
-      socket.on('disconnect', function() {
-        llog('A user disconnected');
-      });
+    });
+  });
 
-    //});
+  // 处理消息
+  socket.on('chat message', function(msg) {
+
+    // 存储此消息
+    db.saveMsg('luchuan', msg.username, msg.content, function(err, r) {  // 目前只有‘luchuan’这一个聊天室
+
+      // 向发起此消息的用户之外的用户广播此消息
+      socket.broadcast.emit('chat message', msg);
+      llog('MSG: [' + msg.username + '] ' + msg.content);
+    });
+
+  });
+
+  // 处理离线
+  socket.on('disconnect', function() {
+
+    // 修改该用户的最后登录时间
+    db.updateLastVisitDate(username, function() {
+
+      llog('USER: [' + username + '] logged out.');
+    });
+
   });
 });
 

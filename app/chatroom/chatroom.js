@@ -3,27 +3,42 @@
 angular.module('myApp.chatroom', ['ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
-      $routeProvider.when('/chatroom/:name', {
+      $routeProvider.when('/chatroom', {
         templateUrl: 'chatroom/chatroom.html',
         controller: 'ChatroomCtrl'
       });
     }])
 
-    .controller('ChatroomCtrl', ['$scope', '$routeParams', 'bidGen', function($scope, $routeParams, bidGen) {
+    .controller('ChatroomCtrl', ['$scope', 'bidGen', function($scope, bidGen) {
       $scope.msgs = [];
-      var bid = bidGen.getCanvasFingerprint();
 
+      var bid = bidGen.getCanvasFingerprint();
+      var username = '';
+
+      // 获取客户端 socket 对象
       var socket = io();
-      socket.emit('log in', {
-        bid: bid,
-        username: $routeParams.name
+
+      // 处理连接成功消息
+      socket.on('connection success', function() {
+        //console.log('connection success');
+
+        // 报告登录
+        socket.emit('log in', {
+          bid: bid
+        });
+      });
+
+      // 获取用户名和历史消息
+      socket.on('login commit', function(info) {
+        $scope.msgs = info.msgs;
+        $scope.$apply();  // 刷新页面显示
+        username = info.username;
       });
 
       // 接收信息
       socket.on('chat message', function(msg) {
         $scope.msgs.push(msg);
-        $scope.$apply();
-        //scrollToWellBottom();
+        $scope.$apply();  // 刷新页面显示
       });
 
       // 发送信息
@@ -32,17 +47,16 @@ angular.module('myApp.chatroom', ['ngRoute'])
 
         if (content) {  // 不处理空白内容
           var msg = {
-            name: $routeParams.name,
+            username: username,
             content: content
           };
           var selfMsg = {
-            name: $routeParams.name,
+            username: username,
             content: content,
-            self: true
+            self: true  // TODO: 这种方式有待修改
           };
           socket.emit('chat message', msg);
           $scope.msgs.push(selfMsg);  // 更新自己的 model
-          //scrollToWellBottom();
           $scope.content = '';
         }
       };
@@ -53,8 +67,6 @@ angular.module('myApp.chatroom', ['ngRoute'])
           scrollToWellBottom();
         });
       }, true);
-
-      //$scope.bid = getCanvasFingerprint();
 
       // 滚动到信息最底端
       function scrollToWellBottom() {

@@ -60,7 +60,6 @@ angular.module('myApp.welcome', ['ngRoute'])
       //$scope.boats = ['聚点儿撸串儿'];
       //$scope.selectedboat = '聚点儿撸串儿';
 
-
       $scope.enterChatRoom = function() {
 
         // 注册该设备
@@ -74,11 +73,25 @@ angular.module('myApp.welcome', ['ngRoute'])
         });
 
         // 跳转
-        $location.path('/chatroom/' + $scope.selectedname);
+        //sendParams(bid, $scope.selectedname);
+        $location.path('/chatroom');
       };
 
       $scope.enterChatRoomAgain = function() {
-        $location.path('/chatroom/' + $scope.registered);
+        //sendParams(bid, $scope.registered);
+        $location.path('/chatroom');
       };
+
+      ///**
+      // * 利用shareFactory服务，向聊天室页面传递参数
+      // * @param bid
+      // * @param username
+      // */
+      //function sendParams(bid, username) {
+      //  shareFactory.setVal({
+      //    bid: bid,
+      //    username: username
+      //  });
+      //}
 
     }]);

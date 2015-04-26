@@ -31,7 +31,9 @@ MongoClient.connect(url, function(err, db) {
 methods.findBrowser = function(bid, callback) {
   coll_user.findOne({bid: bid}, function(err, doc) {
     var username = doc && doc.username;
-    callback(err, username);
+    var lastVisitDate = doc && doc.lastVisitDate;
+
+    callback(err, username, lastVisitDate);
   });
 };
 
@@ -45,6 +47,7 @@ methods.bindUser = function(bid, username, callback) {
   var doc = {
     bid: bid,
     username: username,
+    lastVisitDate: new Date()
   };
   coll_user.updateOne({bid: bid}, {$setOnInsert: doc}, {upsert: true}, function(err, r) {
     callback(err, r);
@@ -60,6 +63,53 @@ methods.bindUser = function(bid, username, callback) {
 methods.updateUsername = function(bid, username, callback) {
   coll_user.updateOne({bid: bid}, {$set: {username: username}}, function(err, r) {
     callback(err, r);
+  });
+};
+
+methods.updateLastVisitDate = function(username, callback) {
+  coll_user.updateOne({username: username}, {$set: {lastVisitDate: new Date()}}, function(err, r) {
+    callback(err, r);
+  });
+};
+
+/**
+ * 存储单条聊天消息
+ * @param room
+ * @param username
+ * @param message
+ * @param callback
+ */
+methods.saveMsg = function(room, username, message, callback) {
+  var record = {
+    room: room,
+    username: username,
+    message: message,
+    date: new Date()
+  };
+
+  coll_record.insertOne(record, function(err, r) {
+    assert.equal(null, err);
+    assert.equal(1, r.insertedCount);
+
+    callback(err, r);
+  });
+};
+
+/**
+ * 获取历史聊天消息
+ * @param room
+ * @param username
+ * @param startDate
+ * @param callback
+ */
+methods.getHistoryMessages = function(room, startDate, callback) {
+  var query = {
+    room: room,
+    date: {$gt: startDate}
+  };
+
+  coll_record.find(query).toArray(function(err, docs) {
+    callback(err, docs);
   });
 };
 
