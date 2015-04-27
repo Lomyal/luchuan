@@ -9,7 +9,7 @@ angular.module('myApp.chatroom', ['ngRoute'])
       });
     }])
 
-    .controller('ChatroomCtrl', ['$scope', 'bidGen', function($scope, bidGen) {
+    .controller('ChatroomCtrl', ['$scope', '$location', 'bidGen', function($scope, $location, bidGen) {
       $scope.msgs = [];
 
       var bid = bidGen.getCanvasFingerprint();
@@ -30,6 +30,13 @@ angular.module('myApp.chatroom', ['ngRoute'])
 
       // 获取用户名和历史消息
       socket.on('login commit', function(info) {
+
+        // 若设备尚未绑定用户，属于非法进入，退回欢迎页面（不保证像session那样每次进入页面都触发检查）
+        if (!info.username) {
+          alert('你的设备尚未注册');
+          return $location.path('/welcome');
+        }
+
         $scope.msgs = info.msgs;
         $scope.$apply();  // 刷新页面显示
         username = info.username;
@@ -43,6 +50,13 @@ angular.module('myApp.chatroom', ['ngRoute'])
 
       // 发送信息
       $scope.sendSelfMessage = function() {
+
+        // 若设备尚未绑定用户，属于非法进入
+        if (!username) {
+          alert('你的设备尚未注册');
+          return $location.path('/welcome');
+        }
+
         var content = $scope.content;
 
         if (content) {  // 不处理空白内容
