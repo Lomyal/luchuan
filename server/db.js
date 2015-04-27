@@ -44,13 +44,24 @@ methods.findBrowser = function(bid, callback) {
  * @param callback
  */
 methods.bindUser = function(bid, username, callback) {
-  var doc = {
-    bid: bid,
-    username: username,
-    lastVisitDate: new Date()
-  };
-  coll_user.updateOne({bid: bid}, {$setOnInsert: doc}, {upsert: true}, function(err, r) {
-    callback(err, r);
+
+  coll_user.findOne({username: username}, function(err, doc) {
+
+    // 若用户名存在，则返回错误
+    if (doc) {
+      return callback('duplicate username', null);
+    }
+
+    // 用户名不存在
+    var newDoc = {
+      bid: bid,
+      username: username,
+      lastVisitDate: new Date()
+    };
+    coll_user.updateOne({bid: bid}, {$setOnInsert: newDoc}, {upsert: true}, function(err, r) {
+      return callback(err, r);
+    });
+
   });
 };
 

@@ -5,9 +5,13 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var favicon = require('express-favicon');
+var compression = require('compression');
 var assert = require('assert');
 
 var db = require('./server/db');
+
+// 开启 gzip 压缩
+app.use(compression());
 
 // 设置网站小图标
 app.use(favicon('app/img/favicon.ico'));
@@ -23,7 +27,7 @@ app.post('/bid', function(req, res) {
   var bid = req.body.bid;
 
   db.findBrowser(bid, function(err, username, lastVisitDate) {
-    llog('USER ' + username +' found in database.');
+    llog('USER [' + username +'] found in database.');
 
     res.send({
       username: username,
@@ -36,9 +40,17 @@ app.post('/bid', function(req, res) {
 // 处理注册请求
 app.post('/reg', function(req, res) {
   db.bindUser(req.body.bid, req.body.username, function(err) {
-    assert.equal(null, err);
 
-    res.send('registered successfully');
+    // 用户名已存在
+    if (err === 'duplicate username') {
+      res.send('duplicate username');
+
+    // 用户名尚不存在
+    } else {
+      res.send('registered successfully');
+    }
+
+
   });
 });
 

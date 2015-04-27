@@ -1,4 +1,18 @@
 
+/* 布局最大宽度 */
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 800px;
+}
+
+/* 用户名输入框最大宽度 */
+.input-username {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 15em;
+}
+
 /*按钮*/
 .btn-luchuan {
   color: #fff;
