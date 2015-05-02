@@ -12,7 +12,7 @@ angular.module('myApp.chatroom', ['ngRoute'])
     .controller('ChatroomCtrl', ['$scope', '$location', 'bidGen', function($scope, $location, bidGen) {
       $scope.msgs = [];
 
-      var bid = bidGen.getCanvasFingerprint();
+      var bid = bidGen.fingerprint.get();
       var username = '';
 
       // 获取客户端 socket 对象
